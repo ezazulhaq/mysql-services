@@ -16,6 +16,8 @@ services:
       - mysql-data:/var/lib/mysql
 
   adminer:
+    depends_on:
+      - db
     image: adminer
     restart: always
     ports:
