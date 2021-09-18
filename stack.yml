@@ -1,0 +1,43 @@
+# Use root/mysql as user/password credentials
+version: "3.7"
+services:
+  db:
+    image: mysql:5.7.34
+    deploy:
+      replicas: 3
+      update_config:
+        delay: 10s
+        parallelism: 2
+        failure_action: rollback
+        monitor: 10s
+      labels:
+        app: mysql-db
+        environment: prod-south
+    ports:
+      - 3308:3306
+    networks:
+      - mysql-net
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: mysql
+      MYSQL_USER: hbstudent
+      MYSQL_PASSWORD: hbstudent
+      MYSQL_DATABASE: hb_student_tracker
+    command: --default-authentication-plugin=mysql_native_password
+
+  adminer:
+    image: adminer
+    deploy:
+      labels:
+        app: mysql-adminer
+        environment: prod-south
+    ports:
+      - 8089:8080
+    networks:
+      - mysql-net
+
+volumes:
+  mysql-data:
+networks:
+  mysql-net:
